@@ -27,7 +27,7 @@ wppconnect
 
 function start(client) {
   client.onMessage(async (message) => {
-      const response = await handleGptResponse(message.body.slice(4))
+      const response = await handleGptResponse(message.body)
       client
         .sendText(message.from, response)
         .then((result) => {
