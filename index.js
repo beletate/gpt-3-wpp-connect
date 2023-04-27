@@ -1,7 +1,9 @@
 require('dotenv').config();
 const wppconnect = require('@wppconnect-team/wppconnect');
-
 const { Configuration, OpenAIApi } = require("openai");
+
+const GPT_INITIALIZATOR_RULE = 'gpt:'
+
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -27,7 +29,8 @@ wppconnect
 
 function start(client) {
   client.onMessage(async (message) => {
-      const response = await handleGptResponse(message.body)
+    if (message.body.slice(0, GPT_INITIALIZATOR_RULE.length).toLowerCase() == GPT_INITIALIZATOR_RULE.toLowerCase()) {
+      const response = await handleGptResponse(message.body.slice(GPT_INITIALIZATOR_RULE.length))
       client
         .sendText(message.from, response)
         .then((result) => {
@@ -36,5 +39,6 @@ function start(client) {
         .catch((erro) => {
           console.error('Error when sending: ', erro); //return object error
         });
+    }
   });
 }
